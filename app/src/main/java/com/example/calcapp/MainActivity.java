@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     Button bSeven, bEight, bNine, bDiv, bFour,bFive, bSix, bMultiply, bOne, bTwo, bThree, bPlus, bZero
-            ,bDot, bEquals, bMinus;
+            ,bDot, bEquals, bMinus, bClear;
     TextView inputText, resultText;
     String input="";
     @SuppressLint("CutPasteId")
@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         bDot = findViewById(R.id.button22);
         bEquals = findViewById(R.id.button23);
         bMinus = findViewById(R.id.button24);
+        bClear = findViewById(R.id.button);
         //Initializing TextViews
         inputText = findViewById(R.id.textView2);
         inputText.setText("Please Enter");
@@ -144,9 +145,14 @@ public class MainActivity extends AppCompatActivity {
         bEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Expression expression = new Expression(input);
-                String result = String.valueOf(expression.calculate());
-                resultText.setText(result);
+                    Expression expression = new Expression(input);
+                    double result = expression.calculate();
+                    if (Double.isNaN(result)) {
+                        resultText.setText("INVALID OPERATION");
+                    }
+                    else {
+                        resultText.setText(String.valueOf(result));
+                    }
 
             }
         });
@@ -155,6 +161,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 input += " - ";
                 inputText.setText(input);
+            }
+        });
+        bClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                input = "";
+                inputText.setText(input);
+                resultText.setText("RESULT");
             }
         });
 

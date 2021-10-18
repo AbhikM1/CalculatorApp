@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     Button bSeven, bEight, bNine, bDiv, bFour,bFive, bSix, bMultiply, bOne, bTwo, bThree, bPlus, bZero
-            ,bDot, bEquals, bMinus, bClear;
+            ,bDot, bEquals, bMinus, bClear, bSecond;
     TextView inputText, resultText;
     String input="";
+    boolean secondFunc = false;
+    boolean radianMode = false;
     @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,33 +36,84 @@ public class MainActivity extends AppCompatActivity {
         bPlus = findViewById(R.id.button20);
         bZero = findViewById(R.id.button21);
         bDot = findViewById(R.id.button22);
-        bEquals = findViewById(R.id.button23);
+        bEquals = findViewById(R.id.button);
         bMinus = findViewById(R.id.button24);
-        bClear = findViewById(R.id.button);
+        bClear = findViewById(R.id.button25);
+        bSecond = findViewById(R.id.button7);
         //Initializing TextViews
         inputText = findViewById(R.id.textView2);
         inputText.setText("Please Enter");
         resultText = findViewById(R.id.textView4);
 
         //Initializing onClickListeners
+        bSecond.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                secondFunc = !secondFunc;
+                if(secondFunc) {
+                    bSeven.setText("SIN");
+                    bEight.setText("COS");
+                    bNine.setText("TAN");
+                    bFour.setText("LN");
+                    bFive.setText("PI");
+                    bSix.setText("DEG");
+                    bOne.setText("^");
+                    bTwo.setText("^2");
+                    bThree.setText("SQRT");
+                }
+                else {
+                    bSeven.setText("7");
+                    bEight.setText("8");
+                    bNine.setText("9");
+                    bFour.setText("4");
+                    bFive.setText("5");
+                    bSix.setText("6");
+                    bOne.setText("1");
+                    bTwo.setText("2");
+                    bThree.setText("3");
+                }
+            }
+        });
+
         bSeven.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "7";
+                if (secondFunc) {
+                    input += "sin(";
+                    bSeven.setText("SIN");
+                } else {
+                    input += "7";
+                    bSeven.setText("7");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
         bEight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "8";
+                if (secondFunc) {
+                    input += "cos(";
+                    bSeven.setText("COS");
+                } else {
+                    input += "8";
+                    bSeven.setText("8");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
         bNine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "9";
+                if (secondFunc) {
+                    input += "tan(";
+                    bSeven.setText("TAN");
+                } else {
+                    input += "9";
+                    bSeven.setText("9");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
@@ -75,21 +128,47 @@ public class MainActivity extends AppCompatActivity {
         bFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "4";
+                if (secondFunc) {
+                    input += "ln(";
+                    bSeven.setText("LN");
+                } else {
+                    input += "4";
+                    bSeven.setText("4");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
         bFive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "5";
+                if (secondFunc) {
+                    input += "pi";
+                    bSeven.setText("PI");
+                } else {
+                    input += "5";
+                    bSeven.setText("5");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
         bSix.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "6";
+                if (secondFunc) {
+                    //Make sure this changes the calulations
+                    if (radianMode) {
+                        bSix.setText("RAD");
+                    } else {
+                        bSix.setText("DEG");
+                    }
+                    radianMode = !radianMode;
+                } else {
+                    input += "6";
+                    bSeven.setText("6");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
@@ -103,21 +182,42 @@ public class MainActivity extends AppCompatActivity {
         bOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "1";
+                if (secondFunc) {
+                    input += "^";
+                    bSeven.setText("^");
+                } else {
+                    input += "1";
+                    bSeven.setText("1");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
         bTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "2";
+                if (secondFunc) {
+                    input += "^2";
+                    bSeven.setText("^2");
+                } else {
+                    input += "2";
+                    bSeven.setText("2");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
         bThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                input += "3";
+                if (secondFunc) {
+                    input += "√";
+                    bSeven.setText("√");
+                } else {
+                    input += "3";
+                    bSeven.setText("3");
+                }
+                evaluate(input);
                 inputText.setText(input);
             }
         });
@@ -132,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 input += "0";
+                evaluate(input);
                 inputText.setText(input);
             }
         });
@@ -145,14 +246,13 @@ public class MainActivity extends AppCompatActivity {
         bEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    Expression expression = new Expression(input);
-                    double result = expression.calculate();
-                    if (Double.isNaN(result)) {
-                        resultText.setText("INVALID OPERATION");
-                    }
-                    else {
-                        resultText.setText(String.valueOf(result));
-                    }
+                Expression expression = new Expression(input);
+                double result = expression.calculate();
+                if (Double.isNaN(result)) {
+                    resultText.setText("INVALID OPERATION");
+                } else {
+                    resultText.setText(String.valueOf(result));
+                }
 
             }
         });
@@ -171,6 +271,18 @@ public class MainActivity extends AppCompatActivity {
                 resultText.setText("RESULT");
             }
         });
+    }
 
+    public void evaluate(String input) {
+        Expression expression = new Expression(input);
+        input.replaceAll("√", "^(1/2)");
+        double result = expression.calculate();
+
+        if (Double.isNaN(result)) {
+            resultText.setText("INVALID OPERATION");
+        }
+        else {
+            resultText.setText(String.valueOf(result));
+        }
     }
 }

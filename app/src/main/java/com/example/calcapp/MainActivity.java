@@ -1,5 +1,7 @@
 package com.example.calcapp;
 
+import static java.lang.StrictMath.E;
+
 import androidx.appcompat.app.AppCompatActivity;
 import org.mariuszgromada.math.mxparser.*;
 import android.annotation.SuppressLint;
@@ -8,14 +10,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
 
 public class MainActivity extends AppCompatActivity {
-    Button bSeven, bEight, bNine, bDiv, bFour,bFive, bSix, bMultiply, bOne, bTwo, bThree, bPlus, bZero
-            ,bDot, bEquals, bMinus, bClear, bSecond;
+    Button bSeven, bEight, bNine, bDiv, bFour, bFive, bSix, bMultiply, bOne, bTwo, bThree, bPlus, bZero, bDot, bEquals, bMinus, bClear, bChangeSign, bSecond;
     TextView inputText, resultText;
-    String input="";
+    String input = "";
     boolean secondFunc = false;
     boolean radianMode = false;
+
     @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         bEquals = findViewById(R.id.button);
         bMinus = findViewById(R.id.button24);
         bClear = findViewById(R.id.button25);
+        bChangeSign = findViewById(R.id.button4);
         bSecond = findViewById(R.id.button7);
         //Initializing TextViews
         inputText = findViewById(R.id.textView2);
@@ -50,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 secondFunc = !secondFunc;
-                if(secondFunc) {
+                if (secondFunc) {
                     bSeven.setText("SIN");
                     bEight.setText("COS");
                     bNine.setText("TAN");
@@ -60,8 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     bOne.setText("^");
                     bTwo.setText("^2");
                     bThree.setText("SQRT");
-                }
-                else {
+                } else {
                     bSeven.setText("7");
                     bEight.setText("8");
                     bNine.setText("9");
@@ -85,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "7";
                     bSeven.setText("7");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bEight.setOnClickListener(new View.OnClickListener() {
@@ -99,8 +107,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "8";
                     bSeven.setText("8");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bNine.setOnClickListener(new View.OnClickListener() {
@@ -113,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "9";
                     bSeven.setText("9");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
 
@@ -135,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "4";
                     bSeven.setText("4");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bFive.setOnClickListener(new View.OnClickListener() {
@@ -149,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "5";
                     bSeven.setText("5");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bSix.setOnClickListener(new View.OnClickListener() {
@@ -168,8 +176,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "6";
                     bSeven.setText("6");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bMultiply.setOnClickListener(new View.OnClickListener() {
@@ -189,8 +197,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "1";
                     bSeven.setText("1");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bTwo.setOnClickListener(new View.OnClickListener() {
@@ -203,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "2";
                     bSeven.setText("2");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bThree.setOnClickListener(new View.OnClickListener() {
@@ -217,8 +225,8 @@ public class MainActivity extends AppCompatActivity {
                     input += "3";
                     bSeven.setText("3");
                 }
-                evaluate(input);
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bPlus.setOnClickListener(new View.OnClickListener() {
@@ -232,8 +240,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 input += "0";
-                evaluate(input);
+                bZero.setText("0");
                 inputText.setText(input);
+                resultText.setText(convertNum(String.valueOf(calculate(input))));
             }
         });
         bDot.setOnClickListener(new View.OnClickListener() {
@@ -241,18 +250,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 input += ".";
                 inputText.setText(input);
+
             }
         });
         bEquals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Expression expression = new Expression(input);
-                double result = expression.calculate();
-                if (Double.isNaN(result)) {
-                    resultText.setText("INVALID OPERATION");
-                } else {
-                    resultText.setText(String.valueOf(result));
-                }
+                String answer = convertNum(String.valueOf(calculate(input)));
+                input = answer;
+                inputText.setText(input);
+                resultText.setText(answer);
 
             }
         });
@@ -268,7 +275,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 input = "";
                 inputText.setText(input);
-                resultText.setText("RESULT");
+                resultText.setText("");
+
+            }
+        });
+        bChangeSign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String answer = convertNum(String.valueOf(calculate(input)));
+                answer = "-" + answer;
+                resultText.setText(answer);
             }
         });
     }
@@ -280,9 +296,75 @@ public class MainActivity extends AppCompatActivity {
 
         if (Double.isNaN(result)) {
             resultText.setText("INVALID OPERATION");
-        }
-        else {
+        } else {
             resultText.setText(String.valueOf(result));
         }
     }
+    //    //"
+    //194
+    //
+
+    public static double calculate(String input) {
+        StringTokenizer expr = new StringTokenizer(input, " ");
+        ArrayList<String> tokens = new ArrayList<>();
+        //1,  +,  2,  *,  3
+        while (expr.hasMoreTokens()) {
+            String token = expr.nextToken();
+            tokens.add(token);
+        }
+        while (tokens.size() > 1) {
+            if (tokens.contains("*") || tokens.contains("/")) {
+                if (tokens.contains("*")) {
+                    int i = tokens.indexOf("*");
+                    double a = Double.parseDouble(tokens.get(i - 1));
+                    double b = Double.parseDouble(tokens.get(i + 1));
+                    tokens.add(i + 1, String.valueOf(a * b));
+                    tokens.remove(i);
+                    tokens.remove(i - 1);
+                    tokens.remove(i);
+                } else {
+                    int i = tokens.indexOf("/");
+                    double a = Double.parseDouble(tokens.get(i - 1));
+                    double b = Double.parseDouble(tokens.get(i + 1));
+                    tokens.add(i + 1, String.valueOf(a / b));
+                    tokens.remove(i);
+                    tokens.remove(i - 1);
+                    tokens.remove(i);
+                }
+            } else if (tokens.contains("+") || tokens.contains("-")) {
+                System.out.println(tokens.toString());
+                if (tokens.contains("+")) {
+                    int i = tokens.indexOf("+");
+                    double a = Double.parseDouble(tokens.get(i - 1));
+                    double b = Double.parseDouble(tokens.get(i + 1));
+                    tokens.add(i + 1, String.valueOf(a + b));
+                    tokens.remove(i);
+                    tokens.remove(i - 1);
+                    tokens.remove(i);
+                } else {
+                    int i = tokens.indexOf("-");
+                    double a = Double.parseDouble(tokens.get(i - 1));
+                    double b = Double.parseDouble(tokens.get(i + 1));
+                    tokens.add(i + 1, String.valueOf(a - b));
+                    tokens.remove(i);
+                    tokens.remove(i - 1);
+                    tokens.remove(i);
+                }
+            }
+        }
+        return Double.parseDouble(tokens.get(0));
+    }
+
+    public static String convertNum(String input) {
+        for (int i = 0; i < input.length(); i++) {
+            if (String.valueOf(input.charAt(i)).equals(".")
+                    && String.valueOf(input.charAt(i + 1)).equals("0")) {
+                return input.substring(0, i);
+            }
+        }
+        return input;
+    }
 }
+
+
+

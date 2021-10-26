@@ -11,18 +11,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
 
-public class MainActivity extends AppCompatActivity {
-    Button bSeven, bEight, bNine, bDiv, bFour, bFive, bSix, bMultiply, bOne, bTwo, bThree, bPlus, bZero, bDot, bEquals, bMinus, bClear, bChangeSign, bSecond;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    Button bSeven, bEight, bNine, bDiv, bFour, bFive, bSix, bMultiply, bOne, bTwo, bThree, bPlus,
+            bZero, bDot, bEquals, bMinus, bClear, bChangeSign, bSecond, bPercent, bNegative,
+            bSqrt, bInverse, bPower;
     TextView inputText, resultText;
     String input = "";
-    boolean secondFunc = false;
-    boolean radianMode = false;
 
     @SuppressLint("CutPasteId")
     @Override
@@ -47,315 +48,100 @@ public class MainActivity extends AppCompatActivity {
         bEquals = findViewById(R.id.button);
         bMinus = findViewById(R.id.button24);
         bClear = findViewById(R.id.button25);
+        bPercent = findViewById(R.id.button26);
         bChangeSign = findViewById(R.id.button4);
         bSecond = findViewById(R.id.button7);
+        bNegative = findViewById(R.id.button4);
+        bSqrt = findViewById(R.id.button5);
+        bInverse = findViewById(R.id.button6);
+        bPower = findViewById(R.id.button7);
         //Initializing TextViews
         inputText = findViewById(R.id.textView2);
-        inputText.setText("Please Enter");
         resultText = findViewById(R.id.textView4);
+        //Initializing OnClickListener
+        bSeven.setOnClickListener(this);
+        bEight.setOnClickListener(this);
+        bNine.setOnClickListener(this);
+        bDiv.setOnClickListener(this);
+        bFour.setOnClickListener(this);
+        bFive.setOnClickListener(this);
+        bSix.setOnClickListener(this);
+        bMultiply.setOnClickListener(this);
+        bOne.setOnClickListener(this);
+        bTwo.setOnClickListener(this);
+        bThree.setOnClickListener(this);
+        bPlus.setOnClickListener(this);
+        bZero.setOnClickListener(this);
+        bDot.setOnClickListener(this);
+        bEquals.setOnClickListener(this);
+        bMinus.setOnClickListener(this);
+        bClear.setOnClickListener(this);
+        bPercent.setOnClickListener(this);
+        bNegative.setOnClickListener(this);
+        bSqrt.setOnClickListener(this);
+        bInverse.setOnClickListener(this);
+        bPower.setOnClickListener(this);
 
-        //Initializing onClickListeners
-        bSecond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                secondFunc = !secondFunc;
-                if (secondFunc) {
-                    bSeven.setText("SIN");
-                    bEight.setText("COS");
-                    bNine.setText("TAN");
-                    bFour.setText("LN");
-                    bFive.setText("PI");
-                    bSix.setText("DEG");
-                    bOne.setText("^");
-                    bTwo.setText("^2");
-                    bThree.setText("SQRT");
-                } else {
-                    bSeven.setText("7");
-                    bEight.setText("8");
-                    bNine.setText("9");
-                    bFour.setText("4");
-                    bFive.setText("5");
-                    bSix.setText("6");
-                    bOne.setText("1");
-                    bTwo.setText("2");
-                    bThree.setText("3");
-                }
-            }
-        });
-
-        bSeven.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "sin(";
-                    bSeven.setText("SIN");
-                } else {
-                    input += "7";
-                    bSeven.setText("7");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bEight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "cos(";
-                    bSeven.setText("COS");
-                } else {
-                    input += "8";
-                    bSeven.setText("8");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bNine.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "tan(";
-                    bSeven.setText("TAN");
-                } else {
-                    input += "9";
-                    bSeven.setText("9");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-
-        bDiv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input += " / ";
-                inputText.setText(input);
-            }
-        });
-        bFour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "ln(";
-                    bSeven.setText("LN");
-                } else {
-                    input += "4";
-                    bSeven.setText("4");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bFive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "pi";
-                    bSeven.setText("PI");
-                } else {
-                    input += "5";
-                    bSeven.setText("5");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bSix.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    //Make sure this changes the calulations
-                    if (radianMode) {
-                        bSix.setText("RAD");
-                    } else {
-                        bSix.setText("DEG");
-                    }
-                    radianMode = !radianMode;
-                } else {
-                    input += "6";
-                    bSeven.setText("6");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bMultiply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input += " * ";
-                inputText.setText(input);
-            }
-        });
-        bOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "^";
-                    bSeven.setText("^");
-                } else {
-                    input += "1";
-                    bSeven.setText("1");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bTwo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "^2";
-                    bSeven.setText("^2");
-                } else {
-                    input += "2";
-                    bSeven.setText("2");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bThree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (secondFunc) {
-                    input += "√";
-                    bSeven.setText("√");
-                } else {
-                    input += "3";
-                    bSeven.setText("3");
-                }
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input += " + ";
-                inputText.setText(input);
-            }
-        });
-        bZero.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input += "0";
-                bZero.setText("0");
-                inputText.setText(input);
-                resultText.setText(convertNum(String.valueOf(calculate(input))));
-            }
-        });
-        bDot.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input += ".";
-                inputText.setText(input);
-
-            }
-        });
-        bEquals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String answer = convertNum(String.valueOf(calculate(input)));
-                input = answer;
-                inputText.setText(input);
-                resultText.setText(answer);
-
-            }
-        });
-        bMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input += " - ";
-                inputText.setText(input);
-            }
-        });
-        bClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                input = "";
-                inputText.setText(input);
-                resultText.setText("");
-
-            }
-        });
-        bChangeSign.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String answer = convertNum(String.valueOf(calculate(input)));
-                answer = "-" + answer;
-                resultText.setText(answer);
-            }
-        });
     }
-
-    public void evaluate(String input) {
-        Expression expression = new Expression(input);
-        input.replaceAll("√", "^(1/2)");
-        double result = expression.calculate();
-
-        if (Double.isNaN(result)) {
-            resultText.setText("INVALID OPERATION");
-        } else {
-            resultText.setText(String.valueOf(result));
-        }
-    }
-    //    //"
-    //194
-    //
-
-    public static double calculate(String input) {
+    //splits the expression into tokens
+    public ArrayList<String> tokenize (String input) {
         StringTokenizer expr = new StringTokenizer(input, " ");
         ArrayList<String> tokens = new ArrayList<>();
-        //1,  +,  2,  *,  3
         while (expr.hasMoreTokens()) {
             String token = expr.nextToken();
             tokens.add(token);
         }
-        while (tokens.size() > 1) {
-            if (tokens.contains("*") || tokens.contains("/")) {
-                if (tokens.contains("*")) {
-                    int i = tokens.indexOf("*");
-                    double a = Double.parseDouble(tokens.get(i - 1));
-                    double b = Double.parseDouble(tokens.get(i + 1));
-                    tokens.add(i + 1, String.valueOf(a * b));
-                    tokens.remove(i);
-                    tokens.remove(i - 1);
-                    tokens.remove(i);
-                } else {
-                    int i = tokens.indexOf("/");
-                    double a = Double.parseDouble(tokens.get(i - 1));
-                    double b = Double.parseDouble(tokens.get(i + 1));
-                    tokens.add(i + 1, String.valueOf(a / b));
-                    tokens.remove(i);
-                    tokens.remove(i - 1);
-                    tokens.remove(i);
+        return tokens;
+    }
+    //Calculates expressions with order of operations
+    public String calculate (String input) {
+        try {
+            input = input.replaceAll(" ÷ ", " / ");
+            input = input.replaceAll(" x ", " * ");
+            input = input.replace("^", " ^ ");
+            ArrayList<String> tokens = tokenize(input);
+            while (tokens.size() > 1) {
+                if (tokens.contains("^")) {
+                    System.out.println(tokens.toString());
+                    int i = tokens.indexOf("^");
+                    doOp(tokens, i);
                 }
-            } else if (tokens.contains("+") || tokens.contains("-")) {
-                System.out.println(tokens.toString());
-                if (tokens.contains("+")) {
-                    int i = tokens.indexOf("+");
-                    double a = Double.parseDouble(tokens.get(i - 1));
-                    double b = Double.parseDouble(tokens.get(i + 1));
-                    tokens.add(i + 1, String.valueOf(a + b));
-                    tokens.remove(i);
-                    tokens.remove(i - 1);
-                    tokens.remove(i);
-                } else {
-                    int i = tokens.indexOf("-");
-                    double a = Double.parseDouble(tokens.get(i - 1));
-                    double b = Double.parseDouble(tokens.get(i + 1));
-                    tokens.add(i + 1, String.valueOf(a - b));
-                    tokens.remove(i);
-                    tokens.remove(i - 1);
-                    tokens.remove(i);
+                else if (tokens.contains("*") || tokens.contains("/")) {
+                    if (tokens.contains("*")) {
+                        int i = tokens.indexOf("*");
+                        doOp(tokens, i);
+                    } else {
+                        int i = tokens.indexOf("/");
+                        doOp(tokens, i);
+                        if (tokens.contains(String.valueOf(Double.POSITIVE_INFINITY))
+                                || tokens.contains(String.valueOf(Double.NEGATIVE_INFINITY))) {
+                            return "Cannot Divide by 0";
+                        }
+                    }
+                } else if (tokens.contains("+") || tokens.contains("-")) {
+                    System.out.println(tokens.toString());
+                    if (tokens.contains("+")) {
+                        int i = tokens.indexOf("+");
+                        doOp(tokens, i);
+                    } else {
+                        int i = tokens.indexOf("-");
+                        doOp(tokens, i);
+                    }
                 }
             }
-        }
-        return Double.parseDouble(tokens.get(0));
-    }
 
-    public static String convertNum(String input) {
+
+            return String.valueOf(tokens.get(0));
+        } catch (Exception E) {
+            return "Invalid Expression";
+        }
+
+    }
+    //formats answer correctly according to inputs
+    public static String convertNum (String input){
+        if(input.equals("Cannot Divide by 0") || input.equals("Invalid Expression")) {
+            return input;
+        }
         for (int i = 0; i < input.length(); i++) {
             if (String.valueOf(input.charAt(i)).equals(".")
                     && String.valueOf(input.charAt(i + 1)).equals("0")) {
@@ -364,6 +150,151 @@ public class MainActivity extends AppCompatActivity {
         }
         return input;
     }
+    //Does operations that expression calls for
+    public void doOp (ArrayList <String> input,int i){
+        double a = Double.parseDouble(input.get(i - 1));
+        double b = Double.parseDouble(input.get(i + 1));
+        String op = input.get(i);
+            switch (op) {
+                case "^":
+                    input.add(i + 1, String.valueOf(Math.pow(a, b)));
+                    break;
+                case "*":
+                    input.add(i + 1, String.valueOf(a * b));
+                    break;
+                case "/":
+                    input.add(i + 1, String.valueOf(a / b));
+                    break;
+                case "+":
+                    input.add(i + 1, String.valueOf(a + b));
+                    break;
+                case "-":
+                    input.add(i + 1, String.valueOf(a - b));
+                    break;
+            }
+            input.remove(i);
+            input.remove(i - 1);
+            input.remove(i);
+        }
+
+    @Override
+    public void onClick (View view){
+        switch (view.getId()) {
+            case R.id.button9:
+                input += "7";
+                updateScreen(input);
+                break;
+            case R.id.button10:
+                input += "8";
+                updateScreen(input);
+                break;
+            case R.id.button11:
+                input += "9";
+                updateScreen(input);
+                break;
+            case R.id.button12:
+                input += " ÷ ";
+                inputText.setText(input);
+                break;
+            case R.id.button13:
+                input += "4";
+                updateScreen(input);
+                break;
+            case R.id.button14:
+                input += "5";
+                updateScreen(input);
+                break;
+            case R.id.button15:
+                input += "6";
+                updateScreen(input);
+                break;
+            case R.id.button16:
+                input += " x ";
+                inputText.setText(input);
+                break;
+            case R.id.button17:
+                input += "1";
+                updateScreen(input);
+                break;
+            case R.id.button18:
+                input += "2";
+                updateScreen(input);
+                break;
+            case R.id.button19:
+                input += "3";
+                updateScreen(input);
+                break;
+            case R.id.button24:
+                input += " - ";
+                inputText.setText(input);
+                break;
+            case R.id.button21:
+                input += "0";
+                updateScreen(input);
+                break;
+            case R.id.button26:
+                try {
+                    double result = Double.parseDouble(calculate(input));
+                    result = result/100.0;
+                    String answer = convertNum(String.valueOf(result));
+                    inputText.setText(input);
+                    resultText.setText(answer);
+                }
+                catch (NumberFormatException E) {
+                    E.printStackTrace();
+                }
+                break;
+            case R.id.button22:
+                input += ".";
+                inputText.setText(input);
+                break;
+            case R.id.button20:
+                input += " + ";
+                inputText.setText(input);
+                break;
+            case R.id.button25:
+                input = "";
+                inputText.setText(input);
+                resultText.setText("");
+                break;
+            case R.id.button:
+                String answer = convertNum(String.valueOf(calculate(input)));
+                if (answer.equals("Cannot Divide by 0") || answer.equals("Invalid Expression")) {
+                    input = "";
+                    answer="";
+                }
+                else {
+                    input = answer;
+                }
+                inputText.setText(input);
+                resultText.setText(answer);
+                break;
+            case R.id.button4:
+                input += "-";
+                inputText.setText(input);
+                break;
+            case R.id.button5:
+                input += "^0.5";
+                inputText.setText(input);
+                updateScreen(input);
+                break;
+            case R.id.button6:
+                input += "^-1";
+                inputText.setText(input);
+                updateScreen(input);
+                break;
+            case R.id.button7:
+                input += "^";
+                inputText.setText(input);
+                break;
+        }
+    }
+    //updates the screen as new inputs are put in
+    public void updateScreen (String input){
+        inputText.setText(input);
+        resultText.setText(convertNum(calculate(input)));
+    }
+
 }
 
 
